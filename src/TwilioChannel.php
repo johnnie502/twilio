@@ -56,7 +56,13 @@ class TwilioChannel
                 throw CouldNotSendNotification::invalidMessageObject($message);
             }
 
-            return $this->twilio->sendMessage($message, $to, $useSender);
+            if (is_array($to)) {
+                foreach ($to as $item) {
+                    $this->twilio->sendMessage($message, $item, $useSender);
+                }
+            } else {
+                return $this->twilio->sendMessage($message, $to, $useSender);
+            }
         } catch (Exception $exception) {
             $event = new NotificationFailed(
                 $notifiable,
